@@ -224,7 +224,7 @@ export function AssetEditor({ project, typeId, asset, onSave, onClose }: AssetEd
             <div className="editor-review">
               <div className="editor-review-toolbar">
                 <label htmlFor={targetId + "-output"}>Prompt text</label>
-                <button type="button" className="editor-small-action" onClick={copy} disabled={!draft.text.trim()}>
+                <button type="button" className="editor-small-action" aria-label={copied ? "Copied" : "Copy"} onClick={copy} disabled={!draft.text.trim()}>
                   {copied ? <Check size={15} /> : <Clipboard size={15} />}<span role="status">{copied ? "Copied" : "Copy"}</span>
                 </button>
               </div>
