@@ -28,7 +28,7 @@ const navigation = [
   { value: "library", label: "Asset library", icon: Layers3 },
   { value: "saved", label: "Saved prompts", icon: Bookmark },
 ] as const;
-type Editor = { kind: "project"; project?: Project } | { kind: "asset"; id?: AssetId; prompt?: SavedPrompt };
+type Editor = { kind: "project"; project?: Project } | { kind: "asset"; projectId: string; id?: AssetId; prompt?: SavedPrompt };
 
 function AssetBadge({ category }: { category: AssetTemplate["category"] }) {
   const Icon = category === "2D" ? ImageIcon : category === "3D" ? Box : Braces;
@@ -140,6 +140,7 @@ export default function WorkspacePage() {
   }, [menu]);
 
   const project = data?.projects.find(item => item.id === data.activeProjectId);
+  const editingProject = editor?.kind === "asset" ? data?.projects.find(item => item.id === editor.projectId) : null;
   const prompts = data?.prompts.filter(item => item.projectId === project?.id) ?? [];
   function navigate(next: View) {
     setView(next); setMenu(false); window.scrollTo(0, 0);
@@ -190,12 +191,12 @@ export default function WorkspacePage() {
         : !data ? <p className="loading" role="status">Opening workspace…</p>
         : !project ? <div className="empty-panel"><FolderClosed/><h1>Create a game project</h1><p>Add your game’s theme and art direction to get started.</p><button className="new-button" onClick={createProject}><Plus size={16}/>New project</button></div>
         : <>{view === "overview" && <Hero project={project} edit={() => setEditor({ kind: "project", project })}/>}
-          {view !== "saved" ? <Library compact={view === "overview"} open={id => setEditor({ kind: "asset", id })}/>
-          : <SavedPrompts key={project.id} prompts={prompts} project={project} edit={prompt => setEditor({ kind: "asset", prompt })} create={() => setEditor({ kind: "asset" })}/>}</>}
+          {view !== "saved" ? <Library compact={view === "overview"} open={id => setEditor({ kind: "asset", projectId: project.id, id })}/>
+          : <SavedPrompts key={project.id} prompts={prompts} project={project} edit={prompt => setEditor({ kind: "asset", projectId: project.id, prompt })} create={() => setEditor({ kind: "asset", projectId: project.id })}/>}</>}
       </main>
     </div>
     {editor?.kind === "project" && <ProjectEditor project={editor.project} onSave={storeProject} onClose={() => setEditor(null)}/>}
-    {editor?.kind === "asset" && project && <AssetEditor project={project} typeId={editor.id} asset={editor.prompt} onSave={storePrompt} onClose={() => setEditor(null)}/>}
+    {editor?.kind === "asset" && editingProject && <AssetEditor project={editingProject} typeId={editor.id} asset={editor.prompt} onSave={storePrompt} onClose={() => setEditor(null)}/>}
     {notice && <div className="toast" role="status"><Check size={16}/>{notice}</div>}
   </div>;
 }

@@ -178,8 +178,9 @@ nav { display: grid; gap: 4px; }
   .heading-row { gap: 8px; }
   .library-toolbar { align-items: stretch; margin: 14px 0; gap: 10px; }
   .search-field { width: 100%; }
-  .filters { gap: 5px; }
-  .filter-btn { padding: 7px 8px; font-size: .73rem; }
+  .filters { display: grid; grid-template-columns: repeat(4, max-content); gap: 5px; }
+  .filter-btn { justify-content: center; padding: 7px 7px; font-size: .73rem; }
+  .filter-count { display: none; }
   .template-grid:not(.list-view) { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
   .card-art { aspect-ratio: 1.85; }
   .card-info { padding: 10px; }
